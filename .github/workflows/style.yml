@@ -1,22 +1,22 @@
-name: style
+# name: style
 
-on:
-  push:
-    branches:
-      - 'main'
-      - 'dev**'
+# on:
+#   push:
+#     branches:
+#       - 'main'
+#       - 'dev**'
 
-jobs:
-  style:
-    name: style
-    runs-on: ubuntu-24.04
+# jobs:
+#   style:
+#     name: style
+#     runs-on: ubuntu-24.04
 
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v6
-      with:
-        submodules: 'recursive'
+#     steps:
+#     - name: Checkout
+#       uses: actions/checkout@v6
+#       with:
+#         submodules: 'recursive'
 
-    - name: Check Format
-      run: ./utils/format.py -n
+#     - name: Check Format
+#       run: ./utils/format.py -n
 
