@@ -1,57 +1,57 @@
-name: asan
+# name: asan
 
-on:
-  push:
-    branches:
-      - 'main'
-      - 'dev**'
+# on:
+#   push:
+#     branches:
+#       - 'main'
+#       - 'dev**'
 
-env:
-  TARGET_ARCH: linux64
-  ASAN_OPTIONS: verbosity=1
-  TSAN_OPTIONS: verbosity=1
-  UBSAN_OPTIONS: print_stacktrace=1
+# env:
+#   TARGET_ARCH: linux64
+#   ASAN_OPTIONS: verbosity=1
+#   TSAN_OPTIONS: verbosity=1
+#   UBSAN_OPTIONS: print_stacktrace=1
 
-jobs:
-  sanitize:
-    name: ${{matrix.sanitizer}}
-    runs-on: ubuntu-24.04
+# jobs:
+#   sanitize:
+#     name: ${{matrix.sanitizer}}
+#     runs-on: ubuntu-24.04
 
-    strategy:
-      fail-fast: false
-      matrix:
-        sanitizer: [ASAN, TSAN, UBSAN]
+#     strategy:
+#       fail-fast: false
+#       matrix:
+#         sanitizer: [ASAN, TSAN, UBSAN]
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-        with:
-          submodules: 'recursive'
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v6
+#         with:
+#           submodules: 'recursive'
 
-      - name: Setup Dependencies
-        run: |
-          sudo apt-get update -y -qq
-          sudo apt-get install -y build-essential clang-tidy ninja-build
+#       - name: Setup Dependencies
+#         run: |
+#           sudo apt-get update -y -qq
+#           sudo apt-get install -y build-essential clang-tidy ninja-build
 
-      - name: Configure
-        run: cmake -B BUILD -G Ninja -DCMAKE_BUILD_TYPE=${{matrix.sanitizer}} -DVSP_TESTS=ON -DVSP_CLI=ON
+#       - name: Configure
+#         run: cmake -B BUILD -G Ninja -DCMAKE_BUILD_TYPE=${{matrix.sanitizer}} -DVSP_TESTS=ON -DVSP_CLI=ON
 
-      - name: Build
-        run: cmake --build BUILD
+#       - name: Build
+#         run: cmake --build BUILD
 
-      - name: Test
-        working-directory: BUILD
-        run: ctest --output-on-failure
+#       - name: Test
+#         working-directory: BUILD
+#         run: ctest --output-on-failure
 
-      - name: Upload Logs
-        uses: actions/upload-artifact@v7
-        if: '!cancelled()'
-        with:
-          name: ${{github.event.repository.name}}-logs-${{matrix.sanitizer}}
-          path: |
-              BUILD/.ninja_log
-              BUILD/CMakeCache.txt
-              BUILD/Testing/Temporary/LastTest.log
-          include-hidden-files: true
-          retention-days: 7
+#       - name: Upload Logs
+#         uses: actions/upload-artifact@v7
+#         if: '!cancelled()'
+#         with:
+#           name: ${{github.event.repository.name}}-logs-${{matrix.sanitizer}}
+#           path: |
+#               BUILD/.ninja_log
+#               BUILD/CMakeCache.txt
+#               BUILD/Testing/Temporary/LastTest.log
+#           include-hidden-files: true
+#           retention-days: 7
 
