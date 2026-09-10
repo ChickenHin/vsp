@@ -1,13 +1,10 @@
 name: cmake
 
 on:
-  push:
-    branches:
-      - 'main'
-      - 'dev**'
+  workflow_dispatch: 
 
 env:
-  GITHUB_TOKEN: ${{secrets.CI_TOKEN}}
+  # GITHUB_TOKEN: ${{secrets.CI_TOKEN}}
   BUILD_TYPE: RelWithDebInfo
 
 jobs:
@@ -18,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-24.04, ubuntu-24.04-arm, ubuntu-22.04, ubuntu-22.04-arm, windows-2022, windows-2025]
+        os: [ubuntu-24.04, windows-2025]
 
     steps:
       - name: Checkout
@@ -52,16 +49,16 @@ jobs:
         working-directory: BUILD
         run: ctest -C ${{env.BUILD_TYPE}} --output-on-failure
 
-      - name: Upload Logs
-        uses: actions/upload-artifact@v7
-        if: '!cancelled()'
-        with:
-          name: ${{github.event.repository.name}}-logs-${{matrix.os}}
-          path: |
-              BUILD/.ninja_log
-              BUILD/CMakeCache.txt
-              BUILD/msbuild.binlog
-              BUILD/Testing/Temporary/LastTest.log
-          include-hidden-files: true
-          retention-days: 7
+      # - name: Upload Logs
+      #   uses: actions/upload-artifact@v7
+      #   if: '!cancelled()'
+      #   with:
+      #     name: ${{github.event.repository.name}}-logs-${{matrix.os}}
+      #     path: |
+      #         BUILD/.ninja_log
+      #         BUILD/CMakeCache.txt
+      #         BUILD/msbuild.binlog
+      #         BUILD/Testing/Temporary/LastTest.log
+      #     include-hidden-files: true
+      #     retention-days: 7
 
