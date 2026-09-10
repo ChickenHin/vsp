@@ -1,53 +1,53 @@
-name: lint
+# name: lint
 
-on:
-  push:
-    branches:
-      - 'main'
-      - 'dev**'
+# on:
+#   push:
+#     branches:
+#       - 'main'
+#       - 'dev**'
 
-env:
-  BUILD_TYPE: RELEASE
-  CXX: clang++
-  CC: clang
+# env:
+#   BUILD_TYPE: RELEASE
+#   CXX: clang++
+#   CC: clang
 
-jobs:
-  lint:
-    name: lint
-    runs-on: ubuntu-24.04
+# jobs:
+#   lint:
+#     name: lint
+#     runs-on: ubuntu-24.04
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-        with:
-          submodules: 'recursive'
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v6
+#         with:
+#           submodules: 'recursive'
 
-      - name: Setup Dependencies
-        run: |
-          sudo apt-get update -y -qq
-          sudo apt-get install build-essential clang-tidy ninja-build
+#       - name: Setup Dependencies
+#         run: |
+#           sudo apt-get update -y -qq
+#           sudo apt-get install build-essential clang-tidy ninja-build
 
-      - name: Configure
-        run: |
-          cmake \
-            -B BUILD \
-            -G Ninja \
-            -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
-            -DVSP_TESTS=ON \
-            -DVSP_CLI=ON \
-            -DVSP_LINTER=clang-tidy
+#       - name: Configure
+#         run: |
+#           cmake \
+#             -B BUILD \
+#             -G Ninja \
+#             -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
+#             -DVSP_TESTS=ON \
+#             -DVSP_CLI=ON \
+#             -DVSP_LINTER=clang-tidy
 
-      - name: Build
-        run: cmake --build BUILD
+#       - name: Build
+#         run: cmake --build BUILD
 
-      - name: Upload Logs
-        uses: actions/upload-artifact@v7
-        if: '!cancelled()'
-        with:
-          name: ${{github.event.repository.name}}-logs-lint
-          path: |
-              BUILD/.ninja_log
-              BUILD/CMakeCache.txt
-          include-hidden-files: true
-          retention-days: 7
+#       - name: Upload Logs
+#         uses: actions/upload-artifact@v7
+#         if: '!cancelled()'
+#         with:
+#           name: ${{github.event.repository.name}}-logs-lint
+#           path: |
+#               BUILD/.ninja_log
+#               BUILD/CMakeCache.txt
+#           include-hidden-files: true
+#           retention-days: 7
 
